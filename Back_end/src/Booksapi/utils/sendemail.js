@@ -1,8 +1,8 @@
 const nodemailer = require("nodemailer");
 
 const sendEmail = async (email, subject, text) => {
-    console.log('email',email);
-    console.log('subject',subject);
+    console.log('email', email);
+    console.log('subject', subject);
     try {
         const transporter = nodemailer.createTransport({
             host: process.env.HOST,
@@ -12,7 +12,7 @@ const sendEmail = async (email, subject, text) => {
                 pass: "elsner@12345",
             },
         });
-    
+
 
         await transporter.sendMail({
             from: "kunalp.elsner@gmail.com",
