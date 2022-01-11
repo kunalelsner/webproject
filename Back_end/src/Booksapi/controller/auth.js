@@ -7,7 +7,6 @@ const user = require('./../../restfullapi/models/users')
 // const userh = require('./../src/upload/images')
 const path = require('path')
 const multer = require('multer')
-const Joi = require('joi')
 
 
 
@@ -58,7 +57,6 @@ exports.errHandler = async function (err, req, res, next) {
         res.json({
             message: err.message
         })
-        next()
     }
 }
 
@@ -173,5 +171,17 @@ exports.login = async function (req, res) {
     }
 }
 
-
+exports.userdata=async function(req,res){
+    try {
+        const getusers = await books.find();
+        console.log(getusers);
+        // if (getusers) {
+        //     return getusers;
+        // }
+    }
+    catch (err) {
+        res.send(err)
+        console.log(err);
+    }
+}
 

@@ -1,6 +1,7 @@
 const mongoose=require('mongoose')
 const jwt=require('jsonwebtoken')
 const bcrypt=require('bcrypt')
+const Joi=require('joi')
 
 const booksSchema = new mongoose.Schema(
     {
@@ -18,6 +19,10 @@ const booksSchema = new mongoose.Schema(
             lowercase: true,
             trim: true,
             minlength: [2, "please maximumm 2 enter"],
+        },
+        birthdate: {
+            type: String,
+            // required: true,
         },
         email:{
             type: String,
@@ -61,6 +66,8 @@ booksSchema.pre('save',async function(next){
         next()
     }
 })
+
+
 
 
 // const Userregistrationshema = new mongoose.Schema(
@@ -163,5 +170,15 @@ booksSchema.pre('save',async function(next){
 
 const books=new mongoose.model("book",booksSchema);
 
+
+// const validate = (books) => {
+//     const schema = Joi.object({
+//         firstname: Joi.string().required(),
+//         email: Joi.string().email().required(),
+//         password: Joi.string().required(),
+//         lastname:Joi.string().required(),
+//     });
+//     return schema.validate(books);
+// };
 
 module.exports=books;

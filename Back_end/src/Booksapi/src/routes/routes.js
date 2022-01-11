@@ -10,6 +10,7 @@ const booksdatahandlers=require('./../../controller/books')
 const adminhandlers=require('./../../controller/adminauth')
 const middlewarehandlers=require('./../../middleware/fileupload')
 const practicedemo=require('../../controller/forpracticedemo')
+const validateuserforresetpassword=require('../../controller/resetpassword')
 
  //demo to check working or not
 // router.get("/", (req, res) => {
@@ -40,6 +41,12 @@ router.post('/renewaccesstoken',userhandlers.renewaccesstoken)
 router.post('/protected', userhandlers.auth, userhandlers.protected)
 router.post("/auth/login/admin",adminhandlers.adminlogin)
 
+
+
+//validateuserforresetpassword
+// router.post("/api/users",validateuserforresetpassword.validateuser)
+router.post("/api/password-reset",validateuserforresetpassword.sendemdresetpasswordlink)
+router.post("/password-reset/:userId",validateuserforresetpassword.resetpassword)
 
 //for practice demo
 // create a new teacher or student

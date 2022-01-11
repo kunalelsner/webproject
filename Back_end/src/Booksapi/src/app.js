@@ -1,7 +1,10 @@
+require('dotenv').config()
+require('../utils/sendmailfornotification')
 const express = require('express')
 const multer = require('multer')
 const path = require('path')
 const books = require('../model/books')
+const userdata=require('../controller/auth')
 require('./../db/conn')
 const booksrouter = require('./routes/routes')
 const port = process.env.PORT || 7000
@@ -10,12 +13,13 @@ const cors = require('cors')
 const Joi = require('joi')
 const hbs = require('nodemailer-express-handlebars')
 const nodemailer = require('nodemailer')
+const cron=require('node-cron')
 app.use(cors())
 
 // require('./../Files/Images')
 app.use(express.json())
 
-app.use(middleware)
+// app.use(middleware)
 // require('./../Files/Images')
 
 
@@ -28,7 +32,7 @@ app.use('/profile', express.static('src/Booksapi/Files/Images'));
 // })
 
 
-
+// app.use(userdata.userdata)
 app.use(booksrouter)
 
 
@@ -240,107 +244,123 @@ app.post('/test', async (req, res, next) => {
 });
 
 
+// cron.schedule('1,2,4,5 * * * * ', () => {
+//     console.log('running every minute 1, 2, 4 and 5');
+//   });
+
+//   const birthdate = new Date("1998-10-21T00:00:00.000Z");
+
+//   birthdate.setHours
+
+// function middleware(req, res, next) {
+
+//     next()
+// }
 
 
-function middleware(req, res, next) {
 
-    next()
-}
 
+
+var date = new Date(2021, 11, 19, 19, 14, 0);
+console.log(date);
+
+var j = cron.schedule(date, function(){
+  console.log('job is running');
+});
 
 //for email sending dynamic 
 
 
 
 // initialize nodemailer
-var transporter = nodemailer.createTransport(
-    {
-        service: 'gmail',
-        host: 'smtp.gmail.com',
-        // port: 25,
-        // secure: false,
-        auth: {
-            user: 'kunalp.elsner@gmail.com',
-            pass: 'elsner@12345'
-        }
-        // , tls: {
-        //     rejectUnauthorized: false
-        // }
-    }
-);
-// transporter.sendEMail = function (mailRequest) {
-//     return new Promise(function (resolve, reject) {
-//       transporter.sendMail(mailRequest, (error, info) => {
-//         if (error) {
-//           reject(error);
-//         } else {
-//           resolve("The message was sent!");
+// var transporter = nodemailer.createTransport(
+//     {
+//         service: 'gmail',
+//         host: 'smtp.gmail.com',
+//         // port: 25,
+//         // secure: false,
+//         auth: {
+//             user: 'kunalp.elsner@gmail.com',
+//             pass: 'elsner@12345'
 //         }
-//       });
-//     });
-//   }
-
-
-// let htmlContent = `
-//                 <h1><strong>Contact Form</strong></h1>
-//                 <p>Hi,</p>
-//                 <p> contacted with the following Details</p>
-//                 <br/>
-//                 <p>Email: </p>
-//                 <p>Phone: </p>
-//                 <p>Company Name: </p>
-//                 <p>Message: </p>
-//                 `
-//     let mailOptions = {
-//         from: "kunalp.elsner@gmail.com",
-//         to: "kunalp.elsner@gmail.com",
-//         subject: "Mail Test",
-//         text: "",
-//         html: htmlContent
+//         // , tls: {
+//         //     rejectUnauthorized: false
+//         // }
 //     }
-
-// transporter.sendMail(mailOptions)
-//     .then(function (email) {
-//         // res.status(200).json({ success: true, msg: 'Mail sent' });
-//         console.log('mail sent');
-//     }).catch(function (exception) {
-//         // res.status(200).json({ success: false, msg: exception });
-//         console.log(exception);
-//     });
-
-// point to the template folder
-const handlebarOptions = {
-    viewEngine: {
-        partialsDir: path.resolve('./src/Booksapi/src/views/'),
-        defaultLayout: false,
-    },
-    viewPath: path.resolve('./src/Booksapi/src/views/'),
-};
-
-// // use a template file with nodemailer
-transporter.use('compile', hbs(handlebarOptions))
+// );
+// // transporter.sendEMail = function (mailRequest) {
+// //     return new Promise(function (resolve, reject) {
+// //       transporter.sendMail(mailRequest, (error, info) => {
+// //         if (error) {
+// //           reject(error);
+// //         } else {
+// //           resolve("The message was sent!");
+// //         }
+// //       });
+// //     });
+// //   }
 
 
-var mailOptions = {
-    from: '"Kunal" <kunalp.elsner@gmail.com>', // sender address
-    to: 'kunalp.elsner@gmail.com', // list of receivers
-    // cc:['kishank.elsner@gmail.com',"sorav.elsner@gmail.com"],
-    subject: 'Welcome!',
-    template: 'email', // the name of the template file i.e email.handlebars
-    context: {
-        name: "kishan", // replace {{name}} with Adebola
-        company: 'Elsner Teachnologies' // replace {{company}} with My Company
-    },
-    attachments: [{ filename: "profile_1636550541135.png", path: "./src/Booksapi/Files/Images/profile_1636605382775.png" }],
-};
+// // let htmlContent = `
+// //                 <h1><strong>Contact Form</strong></h1>
+// //                 <p>Hi,</p>
+// //                 <p> contacted with the following Details</p>
+// //                 <br/>
+// //                 <p>Email: </p>
+// //                 <p>Phone: </p>
+// //                 <p>Company Name: </p>
+// //                 <p>Message: </p>
+// //                 `
+// //     let mailOptions = {
+// //         from: "kunalp.elsner@gmail.com",
+// //         to: "kunalp.elsner@gmail.com",
+// //         subject: "Mail Test",
+// //         text: "",
+// //         html: htmlContent
+// //     }
 
-// trigger the sending of the E-mail
-transporter.sendMail(mailOptions, function (error, info) {
-    if (error) {
-        return console.log('error', error);
-    }
-    console.log('Message sent: ' + info.response);
-});
+// // transporter.sendMail(mailOptions)
+// //     .then(function (email) {
+// //         // res.status(200).json({ success: true, msg: 'Mail sent' });
+// //         console.log('mail sent');
+// //     }).catch(function (exception) {
+// //         // res.status(200).json({ success: false, msg: exception });
+// //         console.log(exception);
+// //     });
+
+// // point to the template folder
+// const handlebarOptions = {
+//     viewEngine: {
+//         partialsDir: path.resolve('./src/Booksapi/src/views/'),
+//         defaultLayout: false,
+//     },
+//     viewPath: path.resolve('./src/Booksapi/src/views/'),
+// };
+
+// // // use a template file with nodemailer
+// transporter.use('compile', hbs(handlebarOptions))
+
+
+// var mailOptions = {
+//     from: '"Kunal" <kunalp.elsner@gmail.com>', // sender address
+//     to: 'kunalp.elsner@gmail.com', // list of receivers
+//     // cc:['kishank.elsner@gmail.com',"sorav.elsner@gmail.com"],
+//     subject: 'Welcome!',
+//     template: 'email', // the name of the template file i.e email.handlebars
+//     context: {
+//         name: "kishan", // replace {{name}} with Adebola
+//         company: 'Elsner Teachnologies' // replace {{company}} with My Company
+//     },
+//     attachments: [{ filename: "profile_1636550541135.png", path: "./src/Booksapi/Files/Images/profile_1636605382775.png" }],
+// };
+
+// // trigger the sending of the E-mail
+// transporter.sendMail(mailOptions, function (error, info) {
+//     if (error) {
+//         return console.log('error', error);
+//     }
+//     console.log('Message sent: ' + info.response);
+// });
 
 
 
